@@ -86,9 +86,7 @@ while(1):
         if can_draw:
             if last_pos[0] != pos[0] or last_pos[1] != pos[1]:
                 vetor = (pos[0] - last_pos[0], pos[1] - last_pos[1])
-                print(vetor)
                 norma_vetor = int(math.sqrt(pow(vetor[0], 2) + pow(vetor[1],2)))
-                print("A NORMA E: ", norma_vetor)
                 if norma_vetor:
                     # aux_pos = [last_pos[0]+ (vetor[0]), last_pos[1]+ (vetor[1])]
                     aux_pos = [last_pos[0], last_pos[1]]
