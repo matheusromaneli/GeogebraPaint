@@ -21,6 +21,8 @@ def reta(ponto, vetor, color, weight = (3,3)):
         aux_p[1] -= vetor_aux.y
     return
 
+def ordena(vetor)
+
 def Setup():
     global OX, OY, OZ
     OX = VetorR3(1,0,0)
@@ -38,10 +40,27 @@ def Input():
         # rel = (1,1)
         if mouse_buttons[0]:
             center_vet = [mouse_pos[0]-width/2 ,mouse_pos[1]- height/2]
-            # center_vet = rel
-            OX.translate((center_vet[1],center_vet[0],0))
-            OY.translate((center_vet[0],-center_vet[1],0))
-            OZ.translate((0,-center_vet[1], 0))
+        
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP]:
+            OX.rotate('x', 1)
+            OY.rotate('x', 1)
+            OZ.rotate('x', 1)
+
+        if keys[pygame.K_DOWN]:
+            OX.rotate('x', -1)
+            OY.rotate('x', -1)
+            OZ.rotate('x', -1)
+
+        if keys[pygame.K_LEFT]:
+            OX.rotate('y', -1)
+            OY.rotate('y', -1)
+            OZ.rotate('y', -1)
+
+        if keys[pygame.K_RIGHT]:
+            OX.rotate('y', 1)
+            OY.rotate('y', 1)
+            OZ.rotate('y', 1)
 
     return
 
@@ -50,9 +69,10 @@ def Logic():
 
 def Draw():
     window.fill((0,0,0))
-    reta((width/2,height/2), OX, (255,0,0), (7,7))
-    reta((width/2,height/2), OZ, (0,0,255), (6,6))
-    reta((width/2,height/2), OY, (0,255,0), (5,5))
+    vetores = [(OX,(255,0,0)), (OZ, (0,0,255)), (OY, (0,255,0))]
+    ordem_print = ordena(vetores)
+    for vetor in vetores:
+        reta((width/2,height/2), vetor[0], vetor[1])
     pygame.display.update()
     return
 

@@ -1,4 +1,28 @@
 import math
+
+def matriz_rot(axis, angle):
+    rad = math.pi * angle/180
+    if axis == 'z':
+        return [
+            [math.cos(rad), -math.sin(rad), 0],
+            [math.sin(rad), math.cos(rad), 0],
+            [0, 0, 1]
+        ]
+
+    elif axis == 'x':
+        return [
+            [1, 0, 0],
+            [0, math.cos(rad), -math.sin(rad)],
+            [0, math.sin(rad), math.cos(rad)]
+        ]
+
+    elif axis == 'y':
+        return [
+            [math.cos(rad), 0, -math.sin(rad),],
+            [0, 1, 0],
+            [math.sin(rad), 0, math.cos(rad)]
+        ]
+
 class VetorR3():
 
     def __init__(self, px, py, pz):
@@ -16,14 +40,18 @@ class VetorR3():
     def norma(self):
         return round(math.sqrt(pow(self.x,2) + pow(self.y,2) + pow(self.z,2))+1)
 
-    def translate(self,vetorR3):
-        v_aux = VetorR3(vetorR3[0],vetorR3[1],vetorR3[2])
-        # v_aux.normalize()
-        self.x += v_aux.x
-        self.y += v_aux.y
-        if( self.z > 300):
-            self.z -= v_aux.z
-        else:
-            self.z += v_aux.z
+    def values(self):
+        return [self.x, self.y, self.z]
+
+    def rotate(self, axis, angle):
+        matriz_aux = matriz_rot(axis, angle)
+        point = self.values()
+        aux = [0,0,0]
+        for i in range(len(matriz_aux)):
+            line = matriz_aux[i]
+            for j in range(3):
+                aux[i] += line[j]*point[j]
         
-        self.normalize()
+        self.x = aux[0]
+        self.y = aux[1]
+        self.z = aux[2]
