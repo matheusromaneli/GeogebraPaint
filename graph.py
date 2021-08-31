@@ -5,18 +5,20 @@ width = 600
 
 window = pygame.display.set_mode((width,height))
 
-def reta(ponto, vetor, color):
+def reta(ponto, vetor, color, weight = (3,3)):
     aux_p = [ponto[0], ponto[1]]
-    pencil = pygame.Surface((3,3))
+    pencil = pygame.Surface(weight)
     pencil.fill(color)
-    if not(vetor.x != 0 or vetor.z != 0):
+    if not(vetor.x != 0 or vetor.y != 0):
         window.blit(pencil,aux_p)
         return
-    for i in range(int(ponto[0]), int(width),1):
+    vetor_aux = VetorR3(vetor.x,vetor.y,vetor.z)
+    vetor_aux.normalize()
+    for i in range(200):
         #desenha em aux_p
         window.blit(pencil, aux_p)
-        aux_p[0] += vetor.x
-        aux_p[1] -= vetor.z
+        aux_p[0] += vetor_aux.x
+        aux_p[1] -= vetor_aux.y
     return
 
 def Setup():
@@ -29,10 +31,18 @@ def Setup():
 def Input():
     events = pygame.event.get()
     for event in events:
-        #se o botao[0] estiver pressionado:
-            #pego a angulação do vetor antigo e o novo
-            #rotaciono os vetores OX, OZ, OZ
-        print(event)
+        # print( event)
+        mouse_buttons = pygame.mouse.get_pressed()
+        mouse_pos = pygame.mouse.get_pos()
+        rel = pygame.mouse.get_rel()
+        # rel = (1,1)
+        if mouse_buttons[0]:
+            center_vet = [mouse_pos[0]-width/2 ,mouse_pos[1]- height/2]
+            # center_vet = rel
+            OX.translate((center_vet[1],center_vet[0],0))
+            OY.translate((center_vet[0],-center_vet[1],0))
+            OZ.translate((0,-center_vet[1], 0))
+
     return
 
 def Logic():
@@ -40,9 +50,9 @@ def Logic():
 
 def Draw():
     window.fill((0,0,0))
-    reta((width/2,height/2), OX, (255,0,0))
-    reta((width/2,height/2), OZ, (0,0,255))
-    reta((width/2,height/2), OY, (0,255,0))
+    reta((width/2,height/2), OX, (255,0,0), (7,7))
+    reta((width/2,height/2), OZ, (0,0,255), (6,6))
+    reta((width/2,height/2), OY, (0,255,0), (5,5))
     pygame.display.update()
     return
 
