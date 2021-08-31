@@ -44,6 +44,7 @@ class VetorR3():
         return [self.x, self.y, self.z]
 
     def rotate(self, axis, angle):
+
         matriz_aux = matriz_rot(axis, angle)
         point = self.values()
         aux = [0,0,0]
@@ -55,3 +56,6 @@ class VetorR3():
         self.x = aux[0]
         self.y = aux[1]
         self.z = aux[2]
+
+    def inverse(self):
+        return VetorR3(-self.x, -self.y, -self.z)
