@@ -21,8 +21,6 @@ def reta(ponto, vetor, color, weight = (3,3)):
         aux_p[1] -= vetor_aux.y
     return
 
-def ordena(vetor)
-
 def Setup():
     global OX, OY, OZ
     OX = VetorR3(1,0,0)
@@ -70,8 +68,8 @@ def Logic():
 def Draw():
     window.fill((0,0,0))
     vetores = [(OX,(255,0,0)), (OZ, (0,0,255)), (OY, (0,255,0))]
-    ordem_print = ordena(vetores)
-    for vetor in vetores:
+    ordem_print = sorted(vetores, key = lambda item : item[0].z)
+    for vetor in ordem_print:
         reta((width/2,height/2), vetor[0], vetor[1])
     pygame.display.update()
     return
