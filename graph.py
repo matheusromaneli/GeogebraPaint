@@ -72,6 +72,9 @@ def Input():
             
             equation_points.rotate('x', relative_as_pressed[1])
             equation_points.rotate('y', relative_as_pressed[0])
+            for item in vectors:
+                item[0].rotate('x', relative_as_pressed[1])
+                item[0].rotate('y', relative_as_pressed[0])
         
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
