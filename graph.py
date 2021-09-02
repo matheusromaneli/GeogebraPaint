@@ -1,5 +1,5 @@
 import pygame
-from Vector import VetorR3
+from Geometric import *
 height = 600
 width = 600
 
@@ -21,14 +21,27 @@ def reta(ponto, vetor, color, weight = (3,3)):
         aux_p[1] -= vetor_aux.y
     return
 
+def generate_points():
+    points = []
+    for x in range(-100, 100, 2):
+        for y in range(-100, 100, 2):
+            aux = x**2 + y**2
+            if aux >=0:
+                z = math.sqrt(aux)
+                points.append(Point(x,y,z))
+                points.append(Point(x,y,-z))
+    return points
+
 def Setup():
-    global vectors
+    global vectors, equation_points
     vectors = [
         (VetorR3(1,0,0), (255,0,0))
         ,(VetorR3(0,1,0), (0,255,0))
         ,(VetorR3(0,0,1), (0,0,255)) 
         # ,(VetorR3(1,1,1), (200,200,200))
     ]
+
+    equation_points = Graph(generate_points())
     return
 
 def Input():
@@ -46,18 +59,22 @@ def Input():
     if keys[pygame.K_UP]:
         for item in vectors:
             item[0].rotate('x', -1)
+        equation_points.rotate('x', -1)
 
     if keys[pygame.K_DOWN]:
         for item in vectors:
             item[0].rotate('x', 1)
+        equation_points.rotate('x', 1)
 
     if keys[pygame.K_LEFT]:
         for item in vectors:
             item[0].rotate('y', -1)
+        equation_points.rotate('y', -1)
 
     if keys[pygame.K_RIGHT]:
         for item in vectors:
             item[0].rotate('y', 1)
+        equation_points.rotate('y', 1)
 
     return
 
@@ -67,8 +84,12 @@ def Logic():
 def Draw():
     window.fill((0,0,0))
     ordem_print = sorted(vectors, key = lambda item : item[0].z)
+    pixel = pygame.Surface((3,3))
+    pixel.fill((200,200,200))
     for vetor in ordem_print:
         reta((width/2,height/2), vetor[0], vetor[1])
+    for point in equation_points.points:
+        window.blit(pixel, (point.x+ width/2, point.y+height/2))
     pygame.display.update()
     return
 
