@@ -89,5 +89,7 @@ class Graph():
         self.points = points
 
     def rotate(self,axis,angle):
+
         for point in self.points:
             point.rotate(axis,angle)
+        

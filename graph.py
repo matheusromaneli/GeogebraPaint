@@ -24,6 +24,13 @@ def reta(ponto, vetor, color, weight = (3,3)):
         aux_p[1] += vetor_aux.y
     return
 
+def axis(vetor):
+    points = []
+    for pos in range(100):
+        points.append(Point(vetor[0]* pos, vetor[1] * pos, vetor[2] * pos))
+    return points
+
+
 def generate_points(raio):
     points = []
     for t in np.arange(0,2* math.pi, 0.05):
@@ -35,14 +42,16 @@ def generate_points(raio):
     return points
 
 def Setup():
-    global vectors, equation_points
+    global vectors, equation_points, OX, OY, OZ
     vectors = [
         (VetorR3(1,0,0), (255,0,0))
         ,(VetorR3(0,1,0), (0,255,0))
         ,(VetorR3(0,0,1), (0,0,255)) 
         # ,(VetorR3(1,1,1), (200,200,200))
     ]
-
+    OX = Graph(axis((1,0,0)))
+    OY = Graph(axis((0,-1,0)))
+    OZ = Graph(axis((0,0,1)))
     equation_points = Graph(generate_points(40))
     return
 
@@ -69,12 +78,26 @@ def Input():
             if rel[1] != 0:
                 relative_as_pressed[1] *= rel[1]
             
-            equation_points.rotate('x', relative_as_pressed[1])
+            equation_points.rotate('x', -relative_as_pressed[1])
             equation_points.rotate('y', relative_as_pressed[0])
-            for item in vectors:
-                item[0].rotate('x', relative_as_pressed[1])
-                item[0].rotate('y', relative_as_pressed[0])
-        
+            OX.rotate('x', -relative_as_pressed[1])
+            OX.rotate('y', relative_as_pressed[0])
+            OY.rotate('x', -relative_as_pressed[1])
+            OY.rotate('y', relative_as_pressed[0])
+            OZ.rotate('x', -relative_as_pressed[1])
+            OZ.rotate('y', relative_as_pressed[0])
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_q]:
+        equation_points.rotate('z', -1)
+        OX.rotate('z', -1)
+        OY.rotate('z', -1)
+        OZ.rotate('z', -1)
+    elif keys[pygame.K_e]:
+        equation_points.rotate('z', 1)
+        OX.rotate('z', 1)
+        OY.rotate('z', 1)
+        OZ.rotate('z', 1)
     return
 
 def Logic():
@@ -82,14 +105,14 @@ def Logic():
 
 def Draw():
     window.fill((0,0,0))
-    ordem_print = sorted(vectors, key = lambda item : item[0].z)
-    pixel = pygame.Surface((1,1))
-    for vetor in ordem_print:
-        reta((width/2,height/2), vetor[0], vetor[1])
-
-    for point in equation_points.points:
-        pixel.fill((abs(point.x),abs(point.y),abs(point.z)))
+    pixel = pygame.Surface((2,2))
+    ordem_print = sorted(equation_points.points + OX.points + OY.points + OZ.points, key = lambda item : item.z)
+    for point in ordem_print:
+        pixel.fill((100,100,abs(1.2* point.z)))
         window.blit(pixel, (point.x+ width/2, point.y+height/2))
+    # for point in equation_points.points:
+    #     pixel.fill((abs(point.x),abs(point.y),abs(point.z)))
+    #     window.blit(pixel, (point.x+ width/2, point.y+height/2))
     pygame.display.update()
     return
 
