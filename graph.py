@@ -53,13 +53,25 @@ def Input():
         # print( event)
         mouse_buttons = pygame.mouse.get_pressed()
         mouse_pos = pygame.mouse.get_pos()
+        button_pressed_in = (0,0)
         rel = pygame.mouse.get_rel()
         # rel = (1,1)
-        if event == pygame.event.MOUSEBUTTONDOWN:
+        if event == pygame.MOUSEBUTTONDOWN:
             button_pressed_in = pygame.mouse.get_pos()
         if mouse_buttons[0]:
-            equation_points.rotate('x', rel[1])
-            equation_points.rotate('y', rel[0])
+            relative_as_pressed = [mouse_pos[0] - button_pressed_in[0], mouse_pos[1] - button_pressed_in[1]]
+            
+            norma_relative = math.sqrt(relative_as_pressed[0] **2 + relative_as_pressed[1]**2)
+            relative_as_pressed[0] /= norma_relative
+            relative_as_pressed[1] /= norma_relative
+
+            if rel[0] != 0:
+                relative_as_pressed[0] *= rel[0]
+            if rel[1] != 0:
+                relative_as_pressed[1] *= rel[1]
+            
+            equation_points.rotate('x', relative_as_pressed[1])
+            equation_points.rotate('y', relative_as_pressed[0])
         
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
@@ -98,7 +110,7 @@ def Logic():
 def Draw():
     window.fill((0,0,0))
     ordem_print = sorted(vectors, key = lambda item : item[0].z)
-    pixel = pygame.Surface((3,3))
+    pixel = pygame.Surface((1,1))
     for vetor in ordem_print:
         reta((width/2,height/2), vetor[0], vetor[1])
 
