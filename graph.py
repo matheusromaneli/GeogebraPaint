@@ -7,6 +7,7 @@ height = 600
 width = 600
 
 window = pygame.display.set_mode((width,height))
+clock = pygame.time.Clock()
 
 def reta(ponto, vetor, color, weight = (3,3)):
     aux_p = [ponto[0], ponto[1]]
@@ -21,16 +22,16 @@ def reta(ponto, vetor, color, weight = (3,3)):
         #desenha em aux_p
         window.blit(pencil, aux_p)
         aux_p[0] += vetor_aux.x
-        aux_p[1] -= vetor_aux.y
+        aux_p[1] += vetor_aux.y
     return
 
 def generate_points(raio):
     points = []
-    for t in np.arange(0,2* math.pi, 0.08):
-        for s in np.arange(-math.pi/2, math.pi/2, 0.08):
+    for t in np.arange(0,2* math.pi, 0.05):
+        for s in np.arange(-math.pi/2, math.pi/2, 0.05):
             x = raio * math.cosh(s) * math.cos(t)
-            y = raio * math.cosh(s) * math.sin(t)
-            z = raio * math.sinh(s)
+            y = raio * math.cos(s) * math.sin(t)
+            z = raio * math.sin(s)
             points.append(Point(x,y,z))
     return points
 
@@ -81,25 +82,32 @@ def Input():
     return
 
 def Logic():
-    axis = ['x', 'y']
-    equation_points.rotate(random.choice(axis), 1)
+    axis = ['x', 'y', 'z']
+    equation_points.rotate('x', 1)
+    equation_points.rotate('y', 1)
+    equation_points.rotate('z', 1)
+    for item in vectors:
+        item[0].rotate('x', 1)
+        item[0].rotate('y', 1)
+        item[0].rotate('z', 1)
     return
 
 def Draw():
     window.fill((0,0,0))
     ordem_print = sorted(vectors, key = lambda item : item[0].z)
     pixel = pygame.Surface((3,3))
-    pixel.fill((200,200,200))
     for vetor in ordem_print:
         reta((width/2,height/2), vetor[0], vetor[1])
 
     for point in equation_points.points:
+        pixel.fill((abs(point.x),abs(point.y),abs(point.z)))
         window.blit(pixel, (point.x+ width/2, point.y+height/2))
     pygame.display.update()
     return
 
 Setup()
 while(1):
+    clock.tick(60)
     Input()
     Logic()
     Draw()
