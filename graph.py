@@ -42,16 +42,11 @@ def generate_points(raio):
     return points
 
 def Setup():
-    global vectors, equation_points, OX, OY, OZ
-    vectors = [
-        (VetorR3(1,0,0), (255,0,0))
-        ,(VetorR3(0,1,0), (0,255,0))
-        ,(VetorR3(0,0,1), (0,0,255)) 
-        # ,(VetorR3(1,1,1), (200,200,200))
-    ]
+    global main_axis, equation_points, OX, OY, OZ
     OX = Graph(axis((1,0,0)))
     OY = Graph(axis((0,-1,0)))
     OZ = Graph(axis((0,0,1)))
+    main_axis = [OX, OY, OZ]
     equation_points = Graph(generate_points(40))
     return
 
@@ -80,24 +75,10 @@ def Input():
             
             equation_points.rotate('x', -relative_as_pressed[1])
             equation_points.rotate('y', relative_as_pressed[0])
-            OX.rotate('x', -relative_as_pressed[1])
-            OX.rotate('y', relative_as_pressed[0])
-            OY.rotate('x', -relative_as_pressed[1])
-            OY.rotate('y', relative_as_pressed[0])
-            OZ.rotate('x', -relative_as_pressed[1])
-            OZ.rotate('y', relative_as_pressed[0])
+            for axis in main_axis:
+                axis.rotate('x', -relative_as_pressed[1])
+                axis.rotate('y', relative_as_pressed[0])
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_q]:
-        equation_points.rotate('z', -1)
-        OX.rotate('z', -1)
-        OY.rotate('z', -1)
-        OZ.rotate('z', -1)
-    elif keys[pygame.K_e]:
-        equation_points.rotate('z', 1)
-        OX.rotate('z', 1)
-        OY.rotate('z', 1)
-        OZ.rotate('z', 1)
     return
 
 def Logic():
