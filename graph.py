@@ -30,8 +30,8 @@ def generate_points(raio):
     for t in np.arange(0,2* math.pi, 0.05):
         for s in np.arange(-math.pi/2, math.pi/2, 0.05):
             x = raio * math.cosh(s) * math.cos(t)
-            y = raio * math.cos(s) * math.sin(t)
-            z = raio * math.sin(s)
+            y = raio * math.cosh(s) * math.sin(t)
+            z = raio * math.sinh(s)
             points.append(Point(x,y,z))
     return points
 
@@ -55,8 +55,11 @@ def Input():
         mouse_pos = pygame.mouse.get_pos()
         rel = pygame.mouse.get_rel()
         # rel = (1,1)
+        if event == pygame.event.MOUSEBUTTONDOWN:
+            button_pressed_in = pygame.mouse.get_pos()
         if mouse_buttons[0]:
-            center_vet = [mouse_pos[0]-width/2 ,mouse_pos[1]- height/2]
+            equation_points.rotate('x', rel[1])
+            equation_points.rotate('y', rel[0])
         
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
@@ -82,14 +85,14 @@ def Input():
     return
 
 def Logic():
-    axis = ['x', 'y', 'z']
-    equation_points.rotate('x', 1)
-    equation_points.rotate('y', 1)
-    equation_points.rotate('z', 1)
-    for item in vectors:
-        item[0].rotate('x', 1)
-        item[0].rotate('y', 1)
-        item[0].rotate('z', 1)
+    # axis = ['x', 'y', 'z']
+    # equation_points.rotate('x', 1)
+    # equation_points.rotate('y', 1)
+    # equation_points.rotate('z', 1)
+    # for item in vectors:
+    #     item[0].rotate('x', 1)
+    #     item[0].rotate('y', 1)
+    #     item[0].rotate('z', 1)
     return
 
 def Draw():
@@ -107,7 +110,6 @@ def Draw():
 
 Setup()
 while(1):
-    clock.tick(60)
     Input()
     Logic()
     Draw()
