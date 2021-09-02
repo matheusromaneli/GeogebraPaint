@@ -1,5 +1,8 @@
 import pygame
 from Geometric import *
+import numpy as np
+import random
+
 height = 600
 width = 600
 
@@ -21,15 +24,14 @@ def reta(ponto, vetor, color, weight = (3,3)):
         aux_p[1] -= vetor_aux.y
     return
 
-def generate_points():
+def generate_points(raio):
     points = []
-    for x in range(-100, 100, 2):
-        for y in range(-100, 100, 2):
-            aux = x**2 + y**2
-            if aux >=0:
-                z = math.sqrt(aux)
-                points.append(Point(x,y,z))
-                points.append(Point(x,y,-z))
+    for t in np.arange(0,2* math.pi, 0.08):
+        for s in np.arange(-math.pi/2, math.pi/2, 0.08):
+            x = raio * math.cosh(s) * math.cos(t)
+            y = raio * math.cosh(s) * math.sin(t)
+            z = raio * math.sinh(s)
+            points.append(Point(x,y,z))
     return points
 
 def Setup():
@@ -41,7 +43,7 @@ def Setup():
         # ,(VetorR3(1,1,1), (200,200,200))
     ]
 
-    equation_points = Graph(generate_points())
+    equation_points = Graph(generate_points(40))
     return
 
 def Input():
@@ -79,6 +81,8 @@ def Input():
     return
 
 def Logic():
+    axis = ['x', 'y']
+    equation_points.rotate(random.choice(axis), 1)
     return
 
 def Draw():
@@ -88,6 +92,7 @@ def Draw():
     pixel.fill((200,200,200))
     for vetor in ordem_print:
         reta((width/2,height/2), vetor[0], vetor[1])
+
     for point in equation_points.points:
         window.blit(pixel, (point.x+ width/2, point.y+height/2))
     pygame.display.update()
