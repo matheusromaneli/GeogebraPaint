@@ -7,7 +7,6 @@ height = 600
 width = 600
 
 window = pygame.display.set_mode((width,height))
-clock = pygame.time.Clock()
 
 def reta(ponto, vetor, color, weight = (3,3)):
     aux_p = [ponto[0], ponto[1]]
@@ -76,38 +75,9 @@ def Input():
                 item[0].rotate('x', relative_as_pressed[1])
                 item[0].rotate('y', relative_as_pressed[0])
         
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_UP]:
-        for item in vectors:
-            item[0].rotate('x', -1)
-        equation_points.rotate('x', -1)
-
-    if keys[pygame.K_DOWN]:
-        for item in vectors:
-            item[0].rotate('x', 1)
-        equation_points.rotate('x', 1)
-
-    if keys[pygame.K_LEFT]:
-        for item in vectors:
-            item[0].rotate('y', -1)
-        equation_points.rotate('y', -1)
-
-    if keys[pygame.K_RIGHT]:
-        for item in vectors:
-            item[0].rotate('y', 1)
-        equation_points.rotate('y', 1)
-
     return
 
 def Logic():
-    # axis = ['x', 'y', 'z']
-    # equation_points.rotate('x', 1)
-    # equation_points.rotate('y', 1)
-    # equation_points.rotate('z', 1)
-    # for item in vectors:
-    #     item[0].rotate('x', 1)
-    #     item[0].rotate('y', 1)
-    #     item[0].rotate('z', 1)
     return
 
 def Draw():
@@ -128,3 +98,36 @@ while(1):
     Input()
     Logic()
     Draw()
+
+
+## PARA PEGAR AS SETAS:
+# keys = pygame.key.get_pressed()
+#     if keys[pygame.K_UP]:
+#         for item in vectors:
+#             item[0].rotate('x', -1)
+#         equation_points.rotate('x', -1)
+
+#     if keys[pygame.K_DOWN]:
+#         for item in vectors:
+#             item[0].rotate('x', 1)
+#         equation_points.rotate('x', 1)
+
+#     if keys[pygame.K_LEFT]:
+#         for item in vectors:
+#             item[0].rotate('y', -1)
+#         equation_points.rotate('y', -1)
+
+#     if keys[pygame.K_RIGHT]:
+#         for item in vectors:
+#             item[0].rotate('y', 1)
+#         equation_points.rotate('y', 1)
+
+## PARA MANTER RODANDO EM Logic()
+# axis = ['x', 'y', 'z']
+# equation_points.rotate('x', 1)
+# equation_points.rotate('y', 1)
+# equation_points.rotate('z', 1)
+# for item in vectors:
+#     item[0].rotate('x', 1)
+#     item[0].rotate('y', 1)
+#     item[0].rotate('z', 1)
