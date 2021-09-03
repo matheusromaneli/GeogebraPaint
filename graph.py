@@ -48,6 +48,9 @@ def Setup():
     OZ = Graph(axis((0,0,1)))
     main_axis = [OX, OY, OZ]
     equation_points = Graph(generate_points(40))
+    # equation_points.rotate('x', 90)
+    # for ax in main_axis:
+    #     ax.rotate('x', 90)
     return
 
 def Input():
@@ -69,15 +72,15 @@ def Input():
             relative_as_pressed[1] /= norma_relative
 
             if rel[0] != 0:
-                relative_as_pressed[0] *= rel[0]
+                relative_as_pressed[0] *= -rel[0]
             if rel[1] != 0:
                 relative_as_pressed[1] *= rel[1]
             
             equation_points.rotate('x', -relative_as_pressed[1])
-            equation_points.rotate('y', relative_as_pressed[0])
+            equation_points.rotate('z', relative_as_pressed[0])
             for axis in main_axis:
                 axis.rotate('x', -relative_as_pressed[1])
-                axis.rotate('y', relative_as_pressed[0])
+                axis.rotate('z', relative_as_pressed[0])
 
     return
 

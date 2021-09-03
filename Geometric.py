@@ -2,14 +2,7 @@ import math
 
 def matriz_rot(axis, angle):
     rad = math.pi * angle/180
-    if axis == 'z':
-        return [
-            [math.cos(rad), -math.sin(rad), 0],
-            [math.sin(rad), math.cos(rad), 0],
-            [0, 0, 1]
-        ]
-
-    elif axis == 'x':
+    if axis == 'x':
         return [
             [1, 0, 0],
             [0, math.cos(rad), -math.sin(rad)],
@@ -18,9 +11,16 @@ def matriz_rot(axis, angle):
 
     elif axis == 'y':
         return [
-            [math.cos(rad), 0, -math.sin(rad),],
+            [math.cos(rad), 0, -math.sin(rad)],
             [0, 1, 0],
             [math.sin(rad), 0, math.cos(rad)]
+        ]
+
+    elif axis == 'z':
+        return [
+            [math.cos(rad), -math.sin(rad), 0],
+            [math.sin(rad), math.cos(rad), 0],
+            [0, 0, 1]
         ]
 
 class VetorR3():
@@ -87,9 +87,18 @@ class Graph():
 
     def __init__(self, points):
         self.points = points
+        self.x_rotation = 0
 
     def rotate(self,axis,angle):
-
-        for point in self.points:
-            point.rotate(axis,angle)
+        if axis == 'x':
+            if self.x_rotation + angle > 90:
+                return
+            self.x_rotation += angle
+            for point in self.points:
+                point.rotate(axis,angle)
+        elif axis == 'z':
+            for point in self.points:
+                point.rotate('x',-self.x_rotation)
+                point.rotate(axis, angle)
+                point.rotate('x', self.x_rotation)
         
