@@ -82,6 +82,11 @@ class Point():
         self.x = aux[0]
         self.y = aux[1]
         self.z = aux[2]
+    
+    def scale(self, size):
+        self.x *= size
+        self.y *= size
+        self.z *= size
 
 class Graph():
 
@@ -91,17 +96,23 @@ class Graph():
 
     def rotate(self,axis,angle):
         if axis == 'x':
-            if self.x_rotation + angle > 90:
-                return
             self.x_rotation += angle
             for point in self.points:
                 point.rotate(axis,angle)
+                
         elif axis == 'z':
             for point in self.points:
                 point.rotate('x',-self.x_rotation)
                 point.rotate(axis, angle)
                 point.rotate('x', self.x_rotation)
 
+    def scale(self, size):
+        if size == 0:
+            return 
+        for point in self.points:
+            point.scale(size)
+
+    
     def to_draw(self, color):
         array = map(lambda point: (point, color), self.points)
         return list(array)

@@ -3,26 +3,11 @@ from Geometric import *
 import numpy as np
 import random
 
+pygame.init()
 height = 600
 width = 600
 
 window = pygame.display.set_mode((width,height))
-
-def reta(ponto, vetor, color, weight = (3,3)):
-    aux_p = [ponto[0], ponto[1]]
-    pencil = pygame.Surface(weight)
-    pencil.fill(color)
-    if not(vetor.x != 0 or vetor.y != 0):
-        window.blit(pencil,aux_p)
-        return
-    vetor_aux = VetorR3(vetor.x,vetor.y,vetor.z)
-    vetor_aux.normalize()
-    for i in range(200):
-        #desenha em aux_p
-        window.blit(pencil, aux_p)
-        aux_p[0] += vetor_aux.x
-        aux_p[1] += vetor_aux.y
-    return
 
 def axis(vetor):
     points = []
@@ -48,22 +33,20 @@ def Setup():
     OZ = Graph(axis((0,0,1)))
     main_axis = [OX, OY, OZ]
     equation_points = Graph(generate_points(40))
-    # equation_points.rotate('x', 90)
-    # for ax in main_axis:
-    #     ax.rotate('x', 90)
     return
 
 def Input():
     events = pygame.event.get()
+    scalation = 1.0
+    mouse_buttons = pygame.mouse.get_pressed(num_buttons = 5)
     for event in events:
-        # print( event)
-        mouse_buttons = pygame.mouse.get_pressed()
         mouse_pos = pygame.mouse.get_pos()
         button_pressed_in = (0,0)
         rel = pygame.mouse.get_rel()
-        # rel = (1,1)
+        
         if event == pygame.MOUSEBUTTONDOWN:
             button_pressed_in = pygame.mouse.get_pos()
+        
         if mouse_buttons[0]:
             relative_as_pressed = [mouse_pos[0] - button_pressed_in[0], mouse_pos[1] - button_pressed_in[1]]
             
@@ -81,6 +64,14 @@ def Input():
             for axis in main_axis:
                 axis.rotate('x', -relative_as_pressed[1])
                 axis.rotate('z', relative_as_pressed[0])
+        
+    if mouse_buttons[3]:
+        scalation = scalation + 0.25 
+        equation_points.scale(scalation)
+
+    if mouse_buttons[4]:
+        scalation = scalation - 0.25 
+        equation_points.scale(scalation)
 
     return
 
@@ -94,13 +85,16 @@ def Draw():
     OY_COLOR = (0,255,0)
     OZ_COLOR = (0,0,255)
     
-    ordem_print = sorted(equation_points.to_draw((100,100,100)) + OX.to_draw(OX_COLOR) + OY.to_draw(OY_COLOR) + OZ.to_draw(OZ_COLOR), key = lambda item : item[0].z)
+    ordem_print = sorted(
+        equation_points.to_draw((100,100,100)) + 
+        OX.to_draw(OX_COLOR) + 
+        OY.to_draw(OY_COLOR) + 
+        OZ.to_draw(OZ_COLOR), 
+        key = lambda item : item[0].z)
+
     for point in ordem_print:
         pixel.fill(point[1])
         window.blit(pixel, (point[0].x+ width/2, point[0].y+height/2))
-    # for point in equation_points.points:
-    #     pixel.fill((abs(point.x),abs(point.y),abs(point.z)))
-    #     window.blit(pixel, (point.x+ width/2, point.y+height/2))
     pygame.display.update()
     return
 
