@@ -90,10 +90,14 @@ def Logic():
 def Draw():
     window.fill((0,0,0))
     pixel = pygame.Surface((2,2))
-    ordem_print = sorted(equation_points.points + OX.points + OY.points + OZ.points, key = lambda item : item.z)
+    OX_COLOR = (255,0,0)
+    OY_COLOR = (0,255,0)
+    OZ_COLOR = (0,0,255)
+    
+    ordem_print = sorted(equation_points.to_draw((100,100,100)) + OX.to_draw(OX_COLOR) + OY.to_draw(OY_COLOR) + OZ.to_draw(OZ_COLOR), key = lambda item : item[0].z)
     for point in ordem_print:
-        pixel.fill((100,100,abs(1.2* point.z)))
-        window.blit(pixel, (point.x+ width/2, point.y+height/2))
+        pixel.fill(point[1])
+        window.blit(pixel, (point[0].x+ width/2, point[0].y+height/2))
     # for point in equation_points.points:
     #     pixel.fill((abs(point.x),abs(point.y),abs(point.z)))
     #     window.blit(pixel, (point.x+ width/2, point.y+height/2))

@@ -101,4 +101,8 @@ class Graph():
                 point.rotate('x',-self.x_rotation)
                 point.rotate(axis, angle)
                 point.rotate('x', self.x_rotation)
+
+    def to_draw(self, color):
+        array = map(lambda point: (point, color), self.points)
+        return list(array)
         
