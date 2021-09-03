@@ -19,10 +19,10 @@ def axis(vetor):
 def generate_points(raio):
     points = []
     for t in np.arange(0,2* math.pi, 0.05):
-        for s in np.arange(-math.pi/2, math.pi/2, 0.05):
-            x = raio * math.cosh(s) * math.cos(t)
-            y = raio * math.cosh(s) * math.sin(t)
-            z = raio * math.sinh(s)
+        for s in np.arange(-math.pi, math.pi, 0.1):
+            x = raio * math.cos(t) + raio/2 * math.cos(s) * math.cos(t)
+            y = raio * math.sin(t) + raio/2 * math.cos(s) * math.sin(t)
+            z = raio/2 * math.sin(s)
             points.append(Point(x,y,z))
     return points
 
