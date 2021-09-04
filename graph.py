@@ -2,10 +2,11 @@ import pygame
 from Geometric import *
 import numpy as np
 import random
+import os
 
 from multiprocessing import Pool as ThreadPool
 if __name__ == '__main__':
-    amount_of_cores = 4
+    amount_of_cores = os.cpu_count()
     pool = ThreadPool(amount_of_cores)
 
     pygame.init()
