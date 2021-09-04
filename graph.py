@@ -2,7 +2,6 @@ import pygame
 from Geometric import *
 import numpy as np
 import random
-from itertools import chain
 
 from multiprocessing import Pool as ThreadPool
 if __name__ == '__main__':
@@ -15,7 +14,7 @@ if __name__ == '__main__':
 
     clock = pygame.time.Clock()
 
-    pixel_max_size = 3
+    pixel_max_size = 4
     Point.pixeis = [pygame.Surface((x+1,x+1)) for x in range(pixel_max_size+1)]
 
     font = pygame.font.SysFont("Arial", 20)
@@ -23,9 +22,9 @@ if __name__ == '__main__':
     window = pygame.display.set_mode((width,height))
 
 ##### For the use of multiprocessing
-def multiprocess_rotate(points,return_index):
+def multiprocess_rotate(points):
     if __name__ == '__main__':
-        equation_points[return_index] = pool.map(rotate_point, points)    
+        equation_points.points = pool.map(rotate_point, points)    
 
 def rotate_point(args):
     if args[1][1] != 0:
@@ -65,12 +64,6 @@ def esfera(graph,raio):
     fz = lambda t,s : raio * math.cos(s)
     new_format(graph,fx,fy,fz,np.arange(0,2* math.pi, 0.05),np.arange(0, math.pi, 0.1))
 
-def plano(graph,_):
-    fx = lambda t,s : s
-    fy = lambda t,s : t
-    fz = lambda t,s : s/3 + 2*t/3
-    new_format(graph,fx,fy,fz,np.arange(0,3, 0.1),np.arange(0, 3, 0.1))
-
 def new_format(graph,fx,fy,fz,t_range,s_range):
     pontos = graph.points
     counter = 0
@@ -90,11 +83,11 @@ def generate_points(quantity,color):
         points.append(Point(0,0,0,color))
     return points
 
-def Setup(number_of_graphs=1,equations=[]):
+def Setup():
     OX_COLOR = (255,0,0)
     OY_COLOR = (0,255,0)
     OZ_COLOR = (0,0,255)
-    global main_axis, equation_points, OX, OY, OZ, graphs
+    global main_axis, equation_points, OX, OY, OZ
     OX = Graph(axis((1,0,0),OX_COLOR))
     OY = Graph(axis((0,-1,0),OY_COLOR))
     OZ = Graph(axis((0,0,1),OZ_COLOR))
@@ -108,16 +101,11 @@ def Setup(number_of_graphs=1,equations=[]):
     #     )
     # point_colors = (lambda self: (100,100,100))
 
-    graphs = [Graph(generate_points(7397,(100,100,100))) for _ in range(number_of_graphs)]
-    equation_points = [x.points for x in graphs]
-
-    for x in range(min([len(equations),number_of_graphs])):
-        equations[x](graphs[x])
+    equation_points = Graph(generate_points(7397,(100,100,100)))
 
     # ampulheta(equation_points,40)
     # esfera(equation_points,40)
-    # donut(equation_points,40)
-    # plano(equation_points,40)
+    donut(equation_points,40)
 
     # equation_points.rotate('x', 60)
     # equation_points.rotate('z', 60)
@@ -155,11 +143,8 @@ def Input():
             if __name__ == '__main__':
                 inversed_relative_as_pressed = relative_as_pressed + [0]
                 inversed_relative_as_pressed[1] = -inversed_relative_as_pressed[1]
-                x = 0
-                for point_group in equation_points:
-                    points_with_change = zip(point_group,[inversed_relative_as_pressed for _ in range(len(point_group))])
-                    multiprocess_rotate(points_with_change,x)  
-                    x+=1         
+                points = zip(equation_points.points,[inversed_relative_as_pressed for _ in range(len(equation_points.points))])
+                multiprocess_rotate(points)           
 
             for a in main_axis:
                 a.rotate('x', -relative_as_pressed[1])
@@ -168,13 +153,11 @@ def Input():
         
     if keys[pygame.K_UP]:
         scalation = scalation + 0.25 
-        for graph in graphs:
-            graph.scale(scalation)
+        equation_points.scale(scalation)
 
     if keys[pygame.K_DOWN]:
         scalation = scalation - 0.25 
-        for graph in graphs:
-            graph.scale(scalation)
+        equation_points.scale(scalation)
 
     return (1 in [keys[pygame.K_DOWN],keys[pygame.K_UP]] or 1 in mouse_buttons)
 
@@ -183,8 +166,8 @@ def Logic():
     # if __name__ == '__main__':
     #     equation_points.points = pool.map(update_point, equation_points.points)
     ######
-    # equation_points.points = list(map(update_point,equation_points.points))
-    # multiprocess_rotate(zip(equation_points.points,[[1,1,0] for _ in range(len(equation_points.points))]))
+    equation_points.points = list(map(update_point,equation_points.points))
+    multiprocess_rotate(zip(equation_points.points,[[1,1,0] for _ in range(len(equation_points.points))]))
     return
 
 def Fps():
@@ -196,7 +179,7 @@ def Draw():
     window.fill((0,0,0))
     
     ordem_print = sorted(
-        list(chain.from_iterable(equation_points)) + 
+        equation_points.points + 
         OX.points + 
         OY.points + 
         OZ.points, 
@@ -214,11 +197,7 @@ def Draw():
 
 asd = 0
 if __name__ == '__main__':
-    equations = [
-        lambda graph : donut(graph,40), 
-        lambda graph : esfera(graph,40), 
-    ]
-    Setup(2,equations)
+    Setup()
     while(1):
 
         # if asd % 300 == 0:
