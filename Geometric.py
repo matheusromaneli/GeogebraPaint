@@ -92,13 +92,16 @@ class Point():
         self.x = aux[0]
         self.y = aux[1]
         self.z = aux[2]
-    
+
+    def get_color(self):
+        return self.color
+
     def scale(self, size):
         self.x *= size
         self.y *= size
         self.z *= size
 
-    def draw(self,width,height):
+    def update(self):
         if abs(self.dx - self.x) > 0 or abs(self.dz - self.z) > 0 or  abs(self.dy - self.y) > 0:
             dis_x = abs(self.dx - self.x)/self.tempo
             dis_y = abs(self.dy - self.y)/self.tempo
@@ -114,10 +117,12 @@ class Point():
             elif self.dy < self.y:
                 self.dy += dis_y * dis_y/norma
 
+    def draw(self,width,height):
         pixel = self.pixeis[self.pixel_size - 1]
-        pixel.fill(self.color(self))
+        pixel.fill(self.get_color())
         window = pygame.display.get_surface()
         window.blit(pixel, (self.dx + width/2, self.dy + height/2))
+        # window.blit(pixel, (self.x + width/2, self.y + height/2))
 
 class Graph():
 

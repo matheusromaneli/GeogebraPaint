@@ -3,18 +3,42 @@ from Geometric import *
 import numpy as np
 import random
 
-pygame.init()
-height = 600
-width = 600
+from multiprocessing import Pool as ThreadPool
+if __name__ == '__main__':
+    amount_of_cores = 4
+    pool = ThreadPool(amount_of_cores)
 
-clock = pygame.time.Clock()
+    pygame.init()
+    height = 600
+    width = 600
 
-pixel_max_size = 4
-Point.pixeis = [pygame.Surface((x+1,x+1)) for x in range(pixel_max_size+1)]
+    clock = pygame.time.Clock()
 
-font = pygame.font.SysFont("Arial", 20)
+    pixel_max_size = 4
+    Point.pixeis = [pygame.Surface((x+1,x+1)) for x in range(pixel_max_size+1)]
 
-window = pygame.display.set_mode((width,height))
+    font = pygame.font.SysFont("Arial", 20)
+
+    window = pygame.display.set_mode((width,height))
+
+##### For the use of multiprocessing
+def multiprocess_rotate(points):
+    if __name__ == '__main__':
+        equation_points.points = pool.map(rotate_point, points)    
+
+def rotate_point(args):
+    if args[1][1] != 0:
+        args[0].rotate('x', args[1][1])
+    if args[1][2] != 0:
+        args[0].rotate('y', args[1][2])
+    if args[1][0] != 0:
+        args[0].rotate('z', args[1][0])
+    return args[0]
+
+def update_point(point):
+    point.update()
+    return point
+####
 
 def axis(vetor,color):
     points = []
@@ -64,24 +88,24 @@ def Setup():
     OY_COLOR = (0,255,0)
     OZ_COLOR = (0,0,255)
     global main_axis, equation_points, OX, OY, OZ
-    OX = Graph(axis((1,0,0), lambda self : OX_COLOR ))
-    OY = Graph(axis((0,-1,0), lambda self : OY_COLOR ))
-    OZ = Graph(axis((0,0,1), lambda self : OZ_COLOR ))
+    OX = Graph(axis((1,0,0),OX_COLOR))
+    OY = Graph(axis((0,-1,0),OY_COLOR))
+    OZ = Graph(axis((0,0,1),OZ_COLOR))
     main_axis = [OX, OY, OZ]
 
-    point_colors = (
-        lambda self : (
-            int((abs(self.dx) / (width/256)))%256,
-            int((abs(self.dy) / (height/256)))%256,
-            140)
-        )
+    # point_colors = (
+    #     lambda self : (
+    #         int((abs(self.dx) / (width/256)))%256,
+    #         int((abs(self.dy) / (height/256)))%256,
+    #         140)
+    #     )
     # point_colors = (lambda self: (100,100,100))
 
-    equation_points = Graph(generate_points(7397,point_colors))
+    equation_points = Graph(generate_points(7397,(100,100,100)))
 
-    ampulheta(equation_points,40)
+    # ampulheta(equation_points,40)
     # esfera(equation_points,40)
-    # donut(equation_points,40)
+    donut(equation_points,40)
 
     # equation_points.rotate('x', 60)
     # equation_points.rotate('z', 60)
@@ -103,7 +127,7 @@ def Input():
         
         if event == pygame.MOUSEBUTTONDOWN:
             button_pressed_in = pygame.mouse.get_pos()
-        
+
         if mouse_buttons[0]:
             relative_as_pressed = [mouse_pos[0] - button_pressed_in[0], mouse_pos[1] - button_pressed_in[1]]
             
@@ -116,11 +140,16 @@ def Input():
             if rel[1] != 0:
                 relative_as_pressed[1] *= rel[1]
             
-            equation_points.rotate('x', -relative_as_pressed[1])
-            equation_points.rotate('z', relative_as_pressed[0])
-            for axis in main_axis:
-                axis.rotate('x', -relative_as_pressed[1])
-                axis.rotate('z', relative_as_pressed[0])
+            if __name__ == '__main__':
+                inversed_relative_as_pressed = relative_as_pressed + [0]
+                inversed_relative_as_pressed[1] = -inversed_relative_as_pressed[1]
+                points = zip(equation_points.points,[inversed_relative_as_pressed for _ in range(len(equation_points.points))])
+                multiprocess_rotate(points)           
+
+            for a in main_axis:
+                a.rotate('x', -relative_as_pressed[1])
+                a.rotate('z', relative_as_pressed[0])
+
         
     if keys[pygame.K_UP]:
         scalation = scalation + 0.25 
@@ -133,6 +162,12 @@ def Input():
     return (1 in [keys[pygame.K_DOWN],keys[pygame.K_UP]] or 1 in mouse_buttons)
 
 def Logic():
+    ### Por algum motivo desconhecido, fazer multiprocess do update é 10x pior que o map
+    # if __name__ == '__main__':
+    #     equation_points.points = pool.map(update_point, equation_points.points)
+    ######
+    equation_points.points = list(map(update_point,equation_points.points))
+    multiprocess_rotate(zip(equation_points.points,[[1,1,0] for _ in range(len(equation_points.points))]))
     return
 
 def Fps():
@@ -161,21 +196,24 @@ def Draw():
     return
 
 asd = 0
-Setup()
-while(1):
+if __name__ == '__main__':
+    Setup()
+    while(1):
 
-    if asd % 100 == 0 and asd % 200 != 0:
-        donut(equation_points,4*40)
-    elif asd % 200 == 0:
-        ampulheta(equation_points,40)
-    asd += 1
+        # if asd % 300 == 0:
+        #     esfera(equation_points,4*40)
+        # elif asd % 200 == 0:
+        #     donut(equation_points,4*40)
+        # elif asd % 100 == 0:
+        #     ampulheta(equation_points,40)
+        # asd += 1
 
-    Input()
-    Draw()
-    Logic()
+        Input()
+        Logic()
+        Draw()
 
-    pygame.display.update()
-    clock.tick(60)
+        pygame.display.update()
+        clock.tick(60)
 
 
 ## PARA PEGAR AS SETAS:
