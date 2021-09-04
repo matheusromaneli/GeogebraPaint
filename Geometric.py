@@ -1,4 +1,5 @@
 import math
+import pygame
 
 def matriz_rot(axis, angle):
     rad = math.pi * angle/180
@@ -61,11 +62,20 @@ class VetorR3():
         return VetorR3(-self.x, -self.y, -self.z)
 
 class Point():
+    tempo = 10
+    pixeis = []
+    for pixel in pixeis:
+        pixel.fill((100,100,100))
 
-    def __init__(self, px, py, pz):
+    def __init__(self, px, py, pz, color):
         self.x = float(px)
         self.y = float(py)
         self.z = float(pz)
+        self.dx = 0
+        self.dy = 0
+        self.dz = 0
+        self.color = color
+        self.pixel_size = 2
     
     def values(self):
         return [self.x, self.y, self.z]
@@ -87,6 +97,27 @@ class Point():
         self.x *= size
         self.y *= size
         self.z *= size
+
+    def draw(self,width,height):
+        if abs(self.dx - self.x) > 0 or abs(self.dz - self.z) > 0 or  abs(self.dy - self.y) > 0:
+            dis_x = abs(self.dx - self.x)/self.tempo
+            dis_y = abs(self.dy - self.y)/self.tempo
+            norma =  math.sqrt(pow(dis_x,2) + pow(dis_y,2))
+
+            if self.dx > self.x:
+                self.dx -= dis_x * dis_x / norma
+            elif self.dx < self.x:
+                self.dx += dis_x * dis_x / norma
+
+            if self.dy > self.y:
+                self.dy -= dis_y * dis_y/norma
+            elif self.dy < self.y:
+                self.dy += dis_y * dis_y/norma
+
+        pixel = self.pixeis[self.pixel_size - 1]
+        pixel.fill(self.color(self))
+        window = pygame.display.get_surface()
+        window.blit(pixel, (self.dx + width/2, self.dy + height/2))
 
 class Graph():
 
@@ -111,9 +142,3 @@ class Graph():
             return 
         for point in self.points:
             point.scale(size)
-
-    
-    def to_draw(self, color):
-        array = map(lambda point: (point, color), self.points)
-        return list(array)
-        
