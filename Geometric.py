@@ -121,8 +121,8 @@ class Point():
         pixel = self.pixeis[self.pixel_size - 1]
         pixel.fill(self.get_color())
         window = pygame.display.get_surface()
-        window.blit(pixel, (self.dx + width/2, self.dy + height/2))
-        # window.blit(pixel, (self.x + width/2, self.y + height/2))
+        # window.blit(pixel, (self.dx + width/2, self.dy + height/2))
+        window.blit(pixel, (self.x + width/2, self.y + height/2))
 
 class Graph():
 

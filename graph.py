@@ -167,7 +167,7 @@ def Logic():
     # if __name__ == '__main__':
     #     equation_points.points = pool.map(update_point, equation_points.points)
     ######
-    equation_points.points = list(map(update_point,equation_points.points))
+    # equation_points.points = list(map(update_point,equation_points.points))
     multiprocess_rotate(zip(equation_points.points,[[1,1,0] for _ in range(len(equation_points.points))]))
     return
 
