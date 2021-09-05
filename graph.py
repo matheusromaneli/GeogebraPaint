@@ -24,16 +24,11 @@ if __name__ == '__main__':
 
 ##### For the use of multiprocessing
 def multiprocess_rotate(points):
-    if __name__ == '__main__':
-        equation_points.points = pool.map(rotate_point, points)    
+    equation_points.points = pool.map(rotate_point, points)    
 
 def rotate_point(args):
-    if args[1][1] != 0:
-        args[0].rotate('x', args[1][1])
-    if args[1][2] != 0:
-        args[0].rotate('y', args[1][2])
-    if args[1][0] != 0:
-        args[0].rotate('z', args[1][0])
+    args[0].rotate('x', args[1][1])
+    args[0].rotate('z', args[1][0])
     return args[0]
 
 def update_point(point):
@@ -51,19 +46,19 @@ def donut(graph,raio): ## Pontos não pode ser vazio
     fx = lambda t,s : raio * math.cos(t) + raio/2 * math.cos(s) * math.cos(t)
     fy = lambda t,s : raio * math.sin(t) + raio/2 * math.cos(s) * math.sin(t)
     fz = lambda t,s : raio/2 * math.sin(s)
-    new_format(graph,fx,fy,fz,np.arange(0,2* math.pi, 0.05),np.arange(-math.pi, math.pi, 0.1))
+    new_format(graph,fx,fy,fz,np.arange(0,2* math.pi, 0.1),np.arange(-math.pi, math.pi, 0.2))
 
 def ampulheta(graph,raio): ## Pontos não pode ser vazio
     fx = lambda t,s : raio * s * math.cos(t)
     fy = lambda t,s : raio * s * math.sin(t)
     fz = lambda t,s : raio * s
-    new_format(graph,fx,fy,fz,np.arange(0,2* math.pi, 0.05),np.arange(-math.pi, math.pi, 0.1))
+    new_format(graph,fx,fy,fz,np.arange(0,2* math.pi, 0.1),np.arange(-math.pi, math.pi, 0.2))
 
 def esfera(graph,raio):
     fx = lambda t,s : raio * math.cos(t) * math.sin(s)
     fy = lambda t,s : raio * math.sin(t) * math.sin(s)
     fz = lambda t,s : raio * math.cos(s)
-    new_format(graph,fx,fy,fz,np.arange(0,2* math.pi, 0.05),np.arange(0, math.pi, 0.1))
+    new_format(graph,fx,fy,fz,np.arange(0,2* math.pi, 0.1),np.arange(0, math.pi, 0.2))
 
 def new_format(graph,fx,fy,fz,t_range,s_range):
     pontos = graph.points
@@ -94,36 +89,22 @@ def Setup():
     OZ = Graph(axis((0,0,1),OZ_COLOR))
     main_axis = [OX, OY, OZ]
 
-    # point_colors = (
-    #     lambda self : (
-    #         int((abs(self.dx) / (width/256)))%256,
-    #         int((abs(self.dy) / (height/256)))%256,
-    #         140)
-    #     )
-    # point_colors = (lambda self: (100,100,100))
-
     equation_points = Graph(generate_points(7397,(100,100,100)))
 
     # ampulheta(equation_points,40)
     # esfera(equation_points,40)
     donut(equation_points,40)
 
-    # equation_points.rotate('x', 60)
-    # equation_points.rotate('z', 60)
-    # for ax in main_axis:
-    #     ax.rotate('x', 60)
-    #     ax.rotate('z', 60)
-    # equation_points.scale(4)
     return
 
 def Input():
+    button_pressed_in = (0,0)
     events = pygame.event.get()
     scalation = 1.0
     mouse_buttons = pygame.mouse.get_pressed(num_buttons = 5)
     keys = pygame.key.get_pressed()
     for event in events:
         mouse_pos = pygame.mouse.get_pos()
-        button_pressed_in = (0,0)
         rel = pygame.mouse.get_rel()
         
         if event == pygame.MOUSEBUTTONDOWN:
@@ -136,19 +117,13 @@ def Input():
             relative_as_pressed[0] /= norma_relative
             relative_as_pressed[1] /= norma_relative
 
-            if rel[0] != 0:
-                relative_as_pressed[0] *= -rel[0]
-            if rel[1] != 0:
-                relative_as_pressed[1] *= rel[1]
+            relative_as_pressed[0] *= rel[0]
+            relative_as_pressed[1] *= rel[1]
             
-            if __name__ == '__main__':
-                inversed_relative_as_pressed = relative_as_pressed + [0]
-                inversed_relative_as_pressed[1] = -inversed_relative_as_pressed[1]
-                points = zip(equation_points.points,[inversed_relative_as_pressed for _ in range(len(equation_points.points))])
-                multiprocess_rotate(points)           
-
+            points = zip(equation_points.points,[relative_as_pressed for _ in range(len(equation_points.points))])
+            multiprocess_rotate(points)
             for a in main_axis:
-                a.rotate('x', -relative_as_pressed[1])
+                a.rotate('x', relative_as_pressed[1])
                 a.rotate('z', relative_as_pressed[0])
 
         
@@ -168,7 +143,7 @@ def Logic():
     #     equation_points.points = pool.map(update_point, equation_points.points)
     ######
     # equation_points.points = list(map(update_point,equation_points.points))
-    multiprocess_rotate(zip(equation_points.points,[[1,1,0] for _ in range(len(equation_points.points))]))
+    # multiprocess_rotate(zip(equation_points.points,[[1,1,0] for _ in range(len(equation_points.points))]))
     return
 
 def Fps():
@@ -196,18 +171,9 @@ def Draw():
     Fps()
     return
 
-asd = 0
 if __name__ == '__main__':
     Setup()
     while(1):
-
-        # if asd % 300 == 0:
-        #     esfera(equation_points,4*40)
-        # elif asd % 200 == 0:
-        #     donut(equation_points,4*40)
-        # elif asd % 100 == 0:
-        #     ampulheta(equation_points,40)
-        # asd += 1
 
         Input()
         Logic()

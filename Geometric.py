@@ -76,22 +76,39 @@ class Point():
         self.dz = 0
         self.color = color
         self.pixel_size = 2
+        self.x_rotation = 0
     
     def values(self):
         return [self.x, self.y, self.z]
  
     def rotate(self, axis, angle):
+        if angle == 0:
+            return
         matriz_aux = matriz_rot(axis, angle)
-        point = self.values()
-        aux = [0,0,0]
-        for i in range(len(matriz_aux)):
-            line = matriz_aux[i]
-            for j in range(3):
-                aux[i] += line[j]*point[j]
-        
-        self.x = aux[0]
-        self.y = aux[1]
-        self.z = aux[2]
+        if axis == 'x':
+            self.x_rotation += angle
+            aux_x = matriz_aux[0][0] * self.x + matriz_aux[1][0] * self.y + matriz_aux[2][0] * self.z
+            aux_y = matriz_aux[0][1] * self.x + matriz_aux[1][1] * self.y + matriz_aux[2][1] * self.z
+            aux_z = matriz_aux[0][2] * self.x + matriz_aux[1][2] * self.y + matriz_aux[2][2] * self.z
+            self.x, self.y, self.z = aux_x, aux_y, aux_z
+
+        elif axis == 'z':
+            x_matrix = matriz_rot('x', -self.x_rotation)
+            aux_x = x_matrix[0][0] * self.x + x_matrix[1][0] * self.y + x_matrix[2][0] * self.z
+            aux_y = x_matrix[0][1] * self.x + x_matrix[1][1] * self.y + x_matrix[2][1] * self.z
+            aux_z = x_matrix[0][2] * self.x + x_matrix[1][2] * self.y + x_matrix[2][2] * self.z
+            self.x, self.y, self.z = aux_x, aux_y, aux_z
+
+            aux_x = matriz_aux[0][0] * self.x + matriz_aux[1][0] * self.y + matriz_aux[2][0] * self.z
+            aux_y = matriz_aux[0][1] * self.x + matriz_aux[1][1] * self.y + matriz_aux[2][1] * self.z
+            aux_z = matriz_aux[0][2] * self.x + matriz_aux[1][2] * self.y + matriz_aux[2][2] * self.z
+            self.x, self.y, self.z = aux_x, aux_y, aux_z
+            
+            x_matrix = matriz_rot('x', self.x_rotation)
+            aux_x = x_matrix[0][0] * self.x + x_matrix[1][0] * self.y + x_matrix[2][0] * self.z
+            aux_y = x_matrix[0][1] * self.x + x_matrix[1][1] * self.y + x_matrix[2][1] * self.z
+            aux_z = x_matrix[0][2] * self.x + x_matrix[1][2] * self.y + x_matrix[2][2] * self.z
+            self.x, self.y, self.z = aux_x, aux_y, aux_z
 
     def get_color(self):
         return self.color
@@ -128,19 +145,10 @@ class Graph():
 
     def __init__(self, points):
         self.points = points
-        self.x_rotation = 0
 
     def rotate(self,axis,angle):
-        if axis == 'x':
-            self.x_rotation += angle
-            for point in self.points:
-                point.rotate(axis,angle)
-                
-        elif axis == 'z':
-            for point in self.points:
-                point.rotate('x',-self.x_rotation)
-                point.rotate(axis, angle)
-                point.rotate('x', self.x_rotation)
+        for point in self.points:
+            point.rotate(axis, angle)
 
     def scale(self, size):
         if size == 0:
