@@ -85,30 +85,27 @@ class Point():
         if angle == 0:
             return
         matriz_aux = matriz_rot(axis, angle)
+        rad = math.pi * angle/180
         if axis == 'x':
             self.x_rotation += angle
-            aux_x = matriz_aux[0][0] * self.x + matriz_aux[1][0] * self.y + matriz_aux[2][0] * self.z
-            aux_y = matriz_aux[0][1] * self.x + matriz_aux[1][1] * self.y + matriz_aux[2][1] * self.z
-            aux_z = matriz_aux[0][2] * self.x + matriz_aux[1][2] * self.y + matriz_aux[2][2] * self.z
-            self.x, self.y, self.z = aux_x, aux_y, aux_z
+            aux_y = math.cos(rad) * self.y + math.sin(rad) * self.z
+            aux_z = -math.sin(rad) * self.y + math.cos(rad) * self.z
+            self.y, self.z = aux_y, aux_z
 
         elif axis == 'z':
-            x_matrix = matriz_rot('x', -self.x_rotation)
-            aux_x = x_matrix[0][0] * self.x + x_matrix[1][0] * self.y + x_matrix[2][0] * self.z
-            aux_y = x_matrix[0][1] * self.x + x_matrix[1][1] * self.y + x_matrix[2][1] * self.z
-            aux_z = x_matrix[0][2] * self.x + x_matrix[1][2] * self.y + x_matrix[2][2] * self.z
-            self.x, self.y, self.z = aux_x, aux_y, aux_z
+            rad_x = math.pi * -self.x_rotation/180
+            aux_y = math.cos(rad_x) * self.y + math.sin(rad_x) * self.z
+            aux_z = -math.sin(rad_x) * self.y + math.cos(rad_x) * self.z
+            self.y, self.z = aux_y, aux_z
 
-            aux_x = matriz_aux[0][0] * self.x + matriz_aux[1][0] * self.y + matriz_aux[2][0] * self.z
-            aux_y = matriz_aux[0][1] * self.x + matriz_aux[1][1] * self.y + matriz_aux[2][1] * self.z
-            aux_z = matriz_aux[0][2] * self.x + matriz_aux[1][2] * self.y + matriz_aux[2][2] * self.z
-            self.x, self.y, self.z = aux_x, aux_y, aux_z
+            aux_x = math.cos(rad) * self.x + math.sin(rad) * self.y
+            aux_y = -math.sin(rad) * self.x + math.cos(rad) * self.y
+            self.x, self.y = aux_x, aux_y
             
-            x_matrix = matriz_rot('x', self.x_rotation)
-            aux_x = x_matrix[0][0] * self.x + x_matrix[1][0] * self.y + x_matrix[2][0] * self.z
-            aux_y = x_matrix[0][1] * self.x + x_matrix[1][1] * self.y + x_matrix[2][1] * self.z
-            aux_z = x_matrix[0][2] * self.x + x_matrix[1][2] * self.y + x_matrix[2][2] * self.z
-            self.x, self.y, self.z = aux_x, aux_y, aux_z
+            rad_x = math.pi * self.x_rotation/180
+            aux_y = math.cos(rad_x) * self.y + math.sin(rad_x) * self.z
+            aux_z = -math.sin(rad_x) * self.y + math.cos(rad_x) * self.z
+            self.y, self.z = aux_y, aux_z
 
     def get_color(self):
         return self.color
