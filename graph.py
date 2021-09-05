@@ -92,8 +92,8 @@ def Setup():
     equation_points = Graph(generate_points(7397,(100,100,100)))
 
     # ampulheta(equation_points,40)
-    # esfera(equation_points,40)
-    donut(equation_points,40)
+    esfera(equation_points,40)
+    # donut(equation_points,40)
 
     return
 
@@ -130,10 +130,14 @@ def Input():
     if keys[pygame.K_UP]:
         scalation = scalation + 0.25 
         equation_points.scale(scalation)
+        for a in main_axis:
+            a.scale(scalation)
 
     if keys[pygame.K_DOWN]:
         scalation = scalation - 0.25 
         equation_points.scale(scalation)
+        for a in main_axis:
+            a.scale(scalation)
 
     return (1 in [keys[pygame.K_DOWN],keys[pygame.K_UP]] or 1 in mouse_buttons)
 

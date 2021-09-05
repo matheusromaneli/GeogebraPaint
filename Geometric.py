@@ -87,6 +87,8 @@ class Point():
         matriz_aux = matriz_rot(axis, angle)
         rad = math.pi * angle/180
         if axis == 'x':
+            if self.x_rotation + angle < -180 or self.x_rotation + angle > 0:
+                return
             self.x_rotation += angle
             aux_y = math.cos(rad) * self.y + math.sin(rad) * self.z
             aux_z = -math.sin(rad) * self.y + math.cos(rad) * self.z
