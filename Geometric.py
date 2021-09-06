@@ -137,6 +137,24 @@ class Point():
         pixel = self.pixeis[self.pixel_size - 1]
         pixel.fill(self.get_color())
         window = pygame.display.get_surface()
+
+        #PROJEÇÃO
+        #serve para redimencionar para outras telas, sendo o w a indicação do quão longe está
+        # aspect = width/height
+        # near = 10.0
+        # far = 1000.0
+        # fov = 30.0
+        # rad = math.pi * fov/180
+        # fov_rad = 1.0/math.tan(rad/2)
+        # x = self.x * aspect * fov_rad
+        # y = self.y * fov_rad
+        # z = ( 3 * far)/(far - near) - (far * near)/(far - near) 
+        # w = 3
+        # if( w != 0):
+        #     x /= w
+        #     y /= w
+        #     z /= w
+        
         # window.blit(pixel, (self.dx + width/2, self.dy + height/2))
         window.blit(pixel, (self.x + width/2, self.y + height/2))
 

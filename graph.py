@@ -92,8 +92,8 @@ def Setup():
     equation_points = Graph(generate_points(7397,(100,100,100)))
 
     # ampulheta(equation_points,40)
-    esfera(equation_points,40)
-    # donut(equation_points,40)
+    # esfera(equation_points,40)
+    donut(equation_points,40)
 
     return
 
